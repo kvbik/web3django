@@ -5,11 +5,6 @@ from django.db import models
 from .models import Order, Payment
 
 
-@admin.action(description="Mark selected stories as published")
-def make_published(modeladmin, request, queryset):
-    queryset.update(status="p")
-
-
 class OrderAdmin(admin.ModelAdmin):
     @admin.display(boolean=True)
     def is_paid(self, obj):
