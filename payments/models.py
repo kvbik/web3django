@@ -1,8 +1,5 @@
 import datetime
 
-from web3 import Web3
-
-from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -35,16 +32,9 @@ class Payment(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def confirm(self):
-        w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
-        balance = w3.eth.get_balance(address)
-        amount = int(self.amount)
-        if balance >= amount:
-            self.is_paid = True
-            self.save()
+        self.is_paid = True
+        self.save()
 
     def __str__(self):
-        amount = int(self.amount)
-        symbol = 'ETH'
-        decimal_amount = Web3.from_wei(amount, 'ether')
-        return f'{self.order} in {decimal_amount} {symbol.lower()}'
+        return f'{self.order} in {self.amount} tokens'
 
