@@ -28,7 +28,8 @@ class Order(models.Model):
 def convert_price_to_amount(usd):
     rate = 3600 # usd per ether
     wei = Web3.to_wei('1', 'ether')
-    return usd * wei / rate
+    amount = usd * wei / rate
+    return str(int(amount))
 
 def get_default_expire():
     return timezone.now() + datetime.timedelta(hours=1)
