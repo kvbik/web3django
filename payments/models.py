@@ -25,10 +25,17 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.description} for ${self.price}'
 
-def convert_price_to_amount(usd):
-    rate = 3600 # usd per ether
+def convert_price_to_amount(price, token=None):
+    '''
+    ugly hardcoded values:
+        if no token, use some random usd/eth rate
+        or keep it 1:1 like it is a usd pegged stablecoin
+    '''
+    rate = 3700
     wei = Web3.to_wei('1', 'ether')
-    amount = usd * wei / rate
+    amount = price * wei
+    if not token:
+        amount = amount / rate
     return str(int(amount))
 
 def get_default_expire():
@@ -61,20 +68,19 @@ class Payment(models.Model):
     order = models.ForeignKey(Order, related_name='payments', on_delete=models.CASCADE)
     address = models.CharField(max_length=128)
     token = models.CharField(max_length=128, blank=True, null=True)
-    amount = models.CharField(max_length=200)
+    amount = models.CharField(max_length=200, blank=True, null=True)
     expire = models.DateTimeField("payment is not accepted after", default=get_default_expire)
     is_paid = models.BooleanField(default=False)
 
     def confirm(self):
-        amount = int(self.amount)
         balance = get_balance_of(self.address, self.token)
+        amount = int(self.amount)
         if balance >= amount:
             self.is_paid = True
             self.save()
 
     def save(self, *args, **kwargs):
-        amount = int(self.amount)
-        if amount == -1:
+        if not self.amount:
             self.amount = convert_price_to_amount(self.order.price)
         super(Payment, self).save(*args, **kwargs)
 
