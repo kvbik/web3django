@@ -5,21 +5,25 @@ intro
  devcon devops python
  github.com/kvbik/web3django
 
+ web3py.readthedocs.io/en/stable/examples.html
+ docs.djangoproject.com/en/5.0/intro/tutorial01/
+
 web1,2,3
  by skylar in his keynote
 
 zen of python
  `import this`
 
- main point
- pythonic, batteries included
+ main point:
+  pythonic
+  batteries included
 
 let's take web2 app
  web:
   frontend
   backend
 
-backend: django python web framework
+django python web framework
  models
  templates
  views
@@ -48,6 +52,7 @@ ethereum chains
 
 ethereum addresses
  we can create many addresses
+
  https://etherscan.io/
  
 ethereum tokens
@@ -65,6 +70,12 @@ def confirm(self):
   if balance >= self.amount:
     self.is_paid = True
     self.save()
+
+ethereum erc20
+ ...
+
+conversion rate challenge
+ ???
  
 django pony & devcon deva
 
