@@ -19,10 +19,6 @@ class OrderAdmin(admin.ModelAdmin):
     ordering = ["purchased"]
 
 class PaymentAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        models.IntegerField: {'widget': NumberInput(attrs={'size':'10'})},
-    }
-
     @admin.action(description="Check received payments")
     def confirm(self, request, queryset):
         for obj in queryset:
