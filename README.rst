@@ -32,3 +32,9 @@ install
   ./manage.py migrate
   ./manage.py runserver
 
+more
+~~~~
+
+ * https://docs.djangoproject.com/en/5.0/intro/tutorial01/
+ * https://web3py.readthedocs.io/en/stable/examples.html
+
