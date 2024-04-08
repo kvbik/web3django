@@ -25,19 +25,6 @@ class Order(models.Model):
     def __str__(self):
         return f'{self.description} for ${self.price}'
 
-def convert_price_to_amount(price, token=None):
-    '''
-    ugly hardcoded values:
-        if no token, use some random usd/eth rate
-        or keep it 1:1 like it is a usd pegged stablecoin
-    '''
-    rate = 3700
-    wei = Web3.to_wei('1', 'ether')
-    amount = price * wei
-    if not token:
-        amount = amount / rate
-    return str(int(amount))
-
 def get_default_expire():
     return timezone.now() + datetime.timedelta(hours=1)
 
@@ -78,11 +65,6 @@ class Payment(models.Model):
         if balance >= amount:
             self.is_paid = True
             self.save()
-
-    def save(self, *args, **kwargs):
-        if not self.amount:
-            self.amount = convert_price_to_amount(self.order.price)
-        super(Payment, self).save(*args, **kwargs)
 
     def __str__(self):
         amount = int(self.amount)
