@@ -23,6 +23,10 @@ class Order(models.Model):
     def __str__(self):
         return '{} for ${}'.format(self.description, self.price)
 
+def convert_price_to_amount(usd):
+    rate = 3600 # usd per ether
+    wei = Web3.to_wei('1', 'ether')
+    return usd * wei / rate
 
 def get_default_expire():
     return timezone.now() + datetime.timedelta(hours=1)
@@ -40,6 +44,11 @@ class Payment(models.Model):
         if balance >= self.amount:
             self.is_paid = True
             self.save()
+
+    def save(self, *args, **kwargs):
+        if self.amount == -1:
+            self.amount = convert_price_to_amount(self.order.price)
+        super(Payment, self).save(*args, **kwargs)
 
     def __str__(self):
         decimal = Web3.from_wei(self.amount, 'ether')
