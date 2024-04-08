@@ -1,0 +1,70 @@
+
+intro
+ @kvbik
+ jakub vysoky
+ devcon devops python
+ github.com/kvbik/web3django
+
+web1,2,3
+ by skylar in his keynote
+
+zen of python
+ `import this`
+
+ main point
+ pythonic, batteries included
+
+let's take web2 app
+ web:
+  frontend
+  backend
+
+backend: django python web framework
+ models
+ templates
+ views
+
+model Order
+ description
+ price
+ created
+ user
+
+model Payment
+ order
+ currency
+ amount
+ account
+ expiration
+ is_paid
+
+django admin
+ => magical app
+
+ethereum chains
+ mainnet/testnet
+ layer 2 (arbitrum, optimism, ..)
+ other chains (polygon, bnb, ..)
+
+ethereum addresses
+ we can create many addresses
+ https://etherscan.io/
+ 
+ethereum tokens
+ wei??? just decimal points
+ 1 eth == 10**18 wei
+ https://eth-converter.com/
+
+ethereum nodes
+ ideally run your own locally
+ when lazy, use eg infura
+
+def confirm(self):
+  w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
+  balance = w3.eth.get_balance(self.address)
+  if balance >= self.amount:
+    self.is_paid = True
+    self.save()
+ 
+django pony & devcon deva
+
