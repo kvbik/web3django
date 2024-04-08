@@ -6,8 +6,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from . import contracts
-
 
 class Order(models.Model):
     description = models.CharField(max_length=200)
@@ -28,29 +26,6 @@ class Order(models.Model):
 def get_default_expire():
     return timezone.now() + datetime.timedelta(hours=1)
 
-def get_decimal_amount_and_symbol(amount, token=None):
-    if not token:
-        symbol = 'ETH'
-        decimal_amount = Web3.from_wei(amount, 'ether')
-        return decimal_amount, symbol
-
-    w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
-    erc20 = w3.eth.contract(token, abi=contracts.ERC20)
-    symbol = erc20.functions.symbol().call()
-    decimals = 10 ** erc20.functions.decimals().call()
-    decimal_amount = amount / decimals
-    return decimal_amount, symbol
-
-def get_balance_of(address, token=None):
-    w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
-    if not token:
-        balance = w3.eth.get_balance(address)
-        return balance
-
-    erc20 = w3.eth.contract(token, abi=contracts.ERC20)
-    balance = erc20.functions.balanceOf(address).call()
-    return balance
-
 class Payment(models.Model):
     order = models.ForeignKey(Order, related_name='payments', on_delete=models.CASCADE)
     address = models.CharField(max_length=128)
@@ -60,7 +35,8 @@ class Payment(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def confirm(self):
-        balance = get_balance_of(self.address, self.token)
+        w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
+        balance = w3.eth.get_balance(address)
         amount = int(self.amount)
         if balance >= amount:
             self.is_paid = True
@@ -68,6 +44,7 @@ class Payment(models.Model):
 
     def __str__(self):
         amount = int(self.amount)
-        decimal_amount, symbol = get_decimal_amount_and_symbol(amount, self.token)
+        symbol = 'ETH'
+        decimal_amount = Web3.from_wei(amount, 'ether')
         return f'{self.order} in {decimal_amount} {symbol.lower()}'
 
