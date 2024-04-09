@@ -36,7 +36,7 @@ class Payment(models.Model):
 
     def confirm(self):
         w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
-        balance = w3.eth.get_balance(address)
+        balance = w3.eth.get_balance(self.address)
         amount = int(self.amount)
         if balance >= amount:
             self.is_paid = True
